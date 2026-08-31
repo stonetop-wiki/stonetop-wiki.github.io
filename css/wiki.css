@@ -1,0 +1,3518 @@
+/* Stonetop Wiki (Book I & Book II) — near-black ground, parchment headings and
+   links, deep wine for structure. Display face is Awery SmallCaps. */
+@font-face {
+  /* Quoted / read-aloud voice. Variable weight — the axis runs 400-900. Roman
+     only, so nothing here should ask for italic. */
+  font-family: "Vollkorn";
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url("fonts/vollkorn-variable.woff2") format("woff2-variations"),
+       url("fonts/vollkorn-variable.woff2") format("woff2");
+}
+@font-face {
+  /* Display face for headings — single weight, all small-caps.
+     Lacks — – …, so the stack below supplies those glyphs. */
+  font-family: "Awery SmallCaps";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/awery-smallcaps.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/source-serif-4-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/source-serif-4-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/source-sans-3-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/source-sans-3-latin-400-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/source-sans-3-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/source-sans-3-latin-700-normal.woff2") format("woff2");
+}
+
+:root {
+  /* Warm near-black ground under parchment type. Only two hues carry meaning:
+     the #cfbea2 parchment of headings, links and icons, and the #5d142b wine
+     that does every structural job — bands, fills, rules, washes. */
+  --bg: #0b0909;
+  --bg-page: #100e0e;
+  --bg-elev: #1c1a1a;
+  --bg-hover: #272220;
+  --ink: #eee8df;
+  --muted: #9f8475;
+  --rule: #3f3128;
+  /* Structural accent — bands, fills, rules, washes. Never type: it has almost
+     no luminance over --bg and is unreadable as a text colour. */
+  --accent: #5d142b;
+  --accent-rgb: 93, 20, 43;
+  /* Headings and titles, kept separate from --accent so type and structure
+     never share a colour. Links are built on this same heading tone. */
+  --head: #cfbea2;
+  --head-rgb: 207, 190, 162;
+  --accent-deep: #410d1e;
+  --accent-soft: #1c1a1a;
+  --link: var(--head);
+  --link-rgb: var(--head-rgb);
+  --link-hover: #ece0c8;
+  --quote: #d7c4a9;
+  --danger: #d52727;
+  /* The GM's own writing — answers typed into questions and blanks. The --accent
+     wine, lifted until it carries as type over --bg (the structural value is
+     unreadable there); it stays the only hue in the wiki that is neither
+     parchment nor ink, so a note never reads as part of the book. */
+  --answer: #c4677f;
+  --answer-rgb: 196, 103, 127;
+  /* Read-aloud voice: --quote text on a 4px rule of the same, set in
+     --font-quote. The face and the rule mark it, not a colour. */
+  --read-aloud: var(--quote);
+  --card: var(--bg-elev);
+  --sidebar-w: 13.125rem; /* was 17.5rem; −25% */
+  /* Headings & titles. Source Serif 4 backstops the glyphs Awery lacks. */
+  --font-serif: "Awery SmallCaps", "Source Serif 4", "Palatino Linotype", Palatino, Georgia, serif;
+  /* Quoted text gets its own face rather than an italic of the body. */
+  --font-quote: "Vollkorn", "Source Serif 4", Georgia, serif;
+  --font-serif-text: "Source Serif 4", "Palatino Linotype", Palatino, "Iowan Old Style", Georgia, serif;
+  --font-sans: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --radius: 4px;
+  --shadow: 0 12px 36px rgba(0, 0, 0, .62);
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, .4);
+  /* Panel skin: flat #0d0b0c ground, 1px border, 6px radius, and an even
+     0 0 10px #000 that lifts a panel without implying a light source. Over it
+     sits a wine wash that falls off from the top edge — the stops below run
+     #6e3331 → #482b33 as it fades. Stops are in rem, not %, so a short block
+     and a tall one look like the same material. */
+  --panel: #0d0b0c;
+  --radius-panel: 6px;
+  --shadow-panel: 0 0 10px #000;
+  --card-wash: linear-gradient(180deg,
+    rgba(110, 51, 49, 0.42) 0,
+    rgba(94, 48, 51, 0.31) 1.1rem,
+    rgba(108, 48, 52, 0.20) 2.2rem,
+    rgba(72, 43, 51, 0.10) 3.8rem,
+    transparent 6rem);
+  --card-wash-deep: linear-gradient(180deg,
+    rgba(110, 51, 49, 0.50) 0,
+    rgba(94, 48, 51, 0.36) 1.4rem,
+    rgba(108, 48, 52, 0.24) 2.8rem,
+    rgba(72, 43, 51, 0.12) 4.6rem,
+    transparent 7rem);
+  --text: 13px;  /* sidebar / chrome */
+  --content: 15px;  /* article body */
+  /* Prose takes a little tracking; small-caps headings want more. Headings run
+     at weight 400 — Awery ships one weight. */
+  --track-text: 0.02em;
+  --track-display: 0.045em;
+  --lh-display: 1.15;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Themed scrollbars (match horizontal content strip on vertical bars too) */
+* {
+  scrollbar-color: var(--accent) var(--bg-elev);
+  scrollbar-width: thin;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--bg-elev);
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--rule);
+  border-radius: 5px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font: 16px/1.5 var(--font-sans);
+  letter-spacing: var(--track-text);
+  /* Awery ships one weight, so asking it for bold gets a smeared synthetic
+     face. Nothing may fake a weight; the text faces all carry real bolds,
+     and display type separates itself by size and color instead. */
+  font-synthesis-weight: none;
+  color: var(--ink);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 90% 55% at 0% 0%, rgba(var(--accent-rgb), 0.07), transparent 46%),
+    radial-gradient(ellipse 70% 50% at 100% 100%, rgba(var(--link-rgb), 0.06), transparent 52%);
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+::selection {
+  background: rgba(var(--accent-rgb), 0.6);
+  color: var(--ink);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--accent);
+  color: var(--head);
+  padding: .5rem 1rem;
+  z-index: 100;
+}
+.skip-link:focus { left: .5rem; top: .5rem; }
+
+html, body {
+  height: 100%;
+  /* Phones: the URL bar overlays the viewport, so 100%/100vh is taller than
+     what you can actually see and the last line is clipped below the fold
+     (nothing scrolls it into view — html/body are overflow:hidden). */
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.layout {
+  display: flex;
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  position: relative;
+  align-self: stretch;
+  width: var(--sidebar-w);
+  height: 100%;
+  max-height: 100vh;
+  max-height: 100dvh;
+  overflow: auto;
+  background: var(--bg-page);
+  border-right: 1px solid var(--rule);
+  box-shadow: inset -1px 0 0 rgba(var(--accent-rgb), 0.08);
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+.sidebar-head {
+  padding: 1rem 1rem .75rem;
+  border-bottom: 1px solid var(--rule);
+  box-shadow: inset 0 2px 0 var(--accent-deep);
+  position: sticky;
+  top: 0;
+  background: color-mix(in srgb, var(--bg-page) 92%, #000 8%);
+  z-index: 1;
+}
+
+/* After the topic list — scrolls with the nav, not pinned to the viewport */
+.sidebar-foot {
+  padding: 0.55rem 1rem 1rem;
+  margin-top: 0.35rem;
+  border-top: 1px solid var(--rule);
+}
+/* CC BY-SA 4.0 attribution — required on every page that carries book text */
+.sidebar-credit {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+.sidebar-credit a { color: var(--muted); }
+.sidebar-credit a:hover { color: var(--link-hover); }
+.sidebar-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--text);
+  line-height: 1.2;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.sidebar-github:hover {
+  color: var(--head);
+}
+.sidebar-github::before {
+  content: "";
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.9rem;
+  height: 0.9rem;
+  background: currentColor;
+  /* GitHub mark (simple monochrome) */
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.wiki-title {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  white-space: nowrap;
+  font-weight: 400;
+  letter-spacing: var(--track-display);
+  line-height: var(--lh-display);
+  color: var(--head);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.48rem;
+  margin-bottom: .65rem;
+}
+.wiki-title::before {
+  content: "";
+  width: 0.5rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+  background: var(--head);
+  /* Filled menhir — same silhouette as images/favicon.svg; keep the two in sync */
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13.89 28.99'%3E%3Cpath fill='black' d='M3.32 0 10.87 1.09 13.89 26.64 7.25 28.99 0 26.46 1.81 4.53z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13.89 28.99'%3E%3Cpath fill='black' d='M3.32 0 10.87 1.09 13.89 26.64 7.25 28.99 0 26.46 1.81 4.53z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.wiki-title:hover { color: var(--link-hover); }
+.wiki-title:hover::before { background: var(--link-hover); }
+
+.nav-filter {
+  width: 100%;
+  padding: .42rem .55rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .28);
+}
+.nav-filter::placeholder { color: var(--muted); opacity: 0.85; }
+.nav-filter:focus {
+  outline: 2px solid var(--head);
+  outline-offset: 1px;
+  border-color: var(--accent-deep);
+}
+
+.search-results {
+  /* Fixed popup so it can be wider than the narrow sidebar */
+  position: fixed;
+  z-index: 250;
+  width: min(36rem, calc(100vw - 1.25rem));
+  max-height: min(50vh, 28rem);
+  margin: 0;
+  overflow-y: auto;
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--accent);
+  border-radius: var(--radius-panel);
+  background: var(--panel);
+  background-image: var(--card-wash);
+  box-shadow: var(--shadow-panel);
+}
+.search-results[hidden] { display: none; }
+.search-results-meta {
+  margin: 0;
+  padding: 0.35rem 0.55rem;
+  font-family: var(--font-serif);
+  font-size: var(--text);
+  font-weight: 400;
+  font-synthesis-weight: none;
+  letter-spacing: 0.04em;
+  color: var(--muted, #6b6560);
+  border-bottom: 1px solid var(--rule);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+}
+.search-hit {
+  display: block;
+  padding: 0.45rem 0.55rem;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: inherit;
+}
+.search-hit:last-child { border-bottom: none; }
+.search-hit:hover {
+  background: var(--bg-hover);
+}
+.search-hit-title {
+  display: block;
+  font-size: var(--text);
+  font-weight: 600;
+  color: var(--head);
+  margin: 0 0 0.15rem;
+}
+.search-hit-where {
+  display: block;
+  font-size: var(--text);
+  color: var(--muted, #6b6560);
+  margin: 0 0 0.2rem;
+}
+.search-hit-snippet {
+  display: block;
+  font-size: var(--text);
+  line-height: 1.35;
+  color: var(--quote);
+}
+.search-hit-snippet mark {
+  background: rgba(var(--accent-rgb), 0.62);
+  color: inherit;
+  padding: 0 0.1em;
+  border-radius: 2px;
+}
+.search-empty {
+  margin: 0;
+  padding: 0.55rem;
+  font-size: var(--text);
+  color: var(--muted, #6b6560);
+}
+
+.toc { padding: .5rem 0 0.25rem; }
+.toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.toc li a {
+  display: block;
+  padding: .28rem .9rem;
+  color: var(--quote);
+  text-decoration: none;
+  font-size: var(--text);
+  border-left: 3px solid transparent;
+}
+.toc li a:hover {
+  background: var(--bg-hover);
+  color: var(--head);
+}
+.toc li.current a {
+  color: var(--head);
+  border-left-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg-hover));
+  font-weight: 600;
+}
+.toc li.nav-arcana a {
+  padding-left: 1.35rem;
+  font-size: var(--text);
+  color: var(--muted);
+}
+.toc li.nav-arcana.current a,
+.toc li.nav-arcana a:hover {
+  color: var(--head);
+}
+/* A split chapter's handouts sit under their hub, indented like the arcana
+   but in the reading colour — they are chapters in their own right. */
+.toc li.nav-part a {
+  padding-left: 1.35rem;
+}
+.toc li.nav-hub a {
+  font-weight: 600;
+}
+.toc li.nav-book-label {
+  list-style: none;
+  margin: 0.85rem 0 0.35rem;
+  padding: 0.45rem 0.9rem 0.25rem;
+  font-family: var(--font-serif);
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--head);
+  border-top: 1px solid var(--rule);
+  pointer-events: none;
+}
+.toc li.nav-book-label:first-child {
+  margin-top: 0.25rem;
+  border-top: none;
+}
+.toc li.has-sections > a {
+  font-weight: 600;
+}
+.toc ul.nav-sections {
+  list-style: none;
+  margin: 0.15rem 0 0.35rem;
+  padding: 0 0 0 0.65rem;
+  border-left: 2px solid var(--rule);
+}
+.toc li.nav-section {
+  margin: 0;
+}
+.toc li.nav-section a {
+  display: block;
+  padding: 0.18rem 0.55rem 0.18rem 0.5rem;
+  font-size: var(--text);
+  line-height: 1.3;
+  color: var(--muted, #6b6560);
+  text-decoration: none;
+  border-radius: 3px;
+}
+.toc li.nav-section a:hover {
+  color: var(--head);
+  background: var(--bg-hover);
+}
+.toc li.current ul.nav-sections {
+  border-left-color: var(--accent);
+}
+.toc li.current li.nav-section a {
+  color: var(--ink);
+}
+.toc li.hidden { display: none; }
+
+.arcana-index ol {
+  columns: 2;
+  column-gap: 1.5rem;
+  padding-left: 1.25rem;
+}
+.arcana-index li {
+  break-inside: avoid;
+  margin: 0.25rem 0;
+}
+.arcana-back {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 0 0 0.75rem;
+  font-size: var(--text);
+}
+
+/* Number printed on the physical arcana card */
+.arcana-card-no {
+  margin-left: auto;
+  font-family: var(--font-serif);
+  font-synthesis-weight: none;
+  color: var(--muted, #6b6560);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+/* Card number badge — top-right of the arcana hover popup (out of flow) */
+.arcana-preview-no {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-serif);
+  font-size: 11px;
+  font-weight: 400;
+  font-synthesis-weight: none;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.wiki-preview .arcana-preview-no {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.55rem;
+  z-index: 2;
+  pointer-events: none;
+}
+/* Keep the first title from running under the badge */
+.wiki-preview .pv-full .arcana-face.arcana-front > .arcana-title-line:first-child {
+  padding-right: 7.5rem;
+}
+
+/* --- Sites (sheets under sites/) --- */
+.toc li.nav-site > a {
+  font-weight: 600;
+}
+
+.site-list {
+  margin: 0.5rem 0 0;
+}
+.site-card {
+  break-inside: avoid;
+  margin: 0 0 1rem;
+  padding: 0 0 0.75rem;
+  border-bottom: 1px solid var(--rule);
+}
+.site-card:last-child {
+  border-bottom: none;
+}
+.site-card h2 {
+  margin-top: 0;
+}
+.site-card .site-excerpt {
+  color: var(--muted, #6b6560);
+}
+.site-card .site-variants,
+.site-card .site-refs {
+  font-size: var(--text);
+  margin: 0.3rem 0 0;
+}
+.site-card .site-refs {
+  color: var(--muted, #6b6560);
+}
+.site-refs-label,
+.related-sites .ra-label {
+  display: inline-block;
+  margin-right: 0.4rem;
+  font-family: var(--font-serif);
+  font-size: 0.85em;
+  letter-spacing: 0.06em;
+  color: var(--muted, #6b6560);
+}
+
+/* "Sites · Vasilya’s Grove" strip atop a referenced wiki page */
+.related-sites {
+  margin: 0 0 0.65rem;
+  padding: 0.35rem 0.55rem;
+  font-size: var(--text);
+  background: var(--panel);
+  background-image: var(--card-wash);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-panel);
+  break-inside: avoid;
+}
+
+.main-wrap {
+  flex: 1;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 30;
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  color: var(--head);
+  font-size: 1.25rem;
+  padding: .25rem .55rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+/*
+ * Horizontal “scroll of pages”:
+ * fixed height, narrow columns, content fills top-to-bottom then left-to-right.
+ * Extra columns appear off-screen with a bottom scrollbar.
+ */
+.content-scroll {
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: none;
+  border-radius: 0;
+  background-color: var(--bg-page);
+  background-image: linear-gradient(180deg, rgba(var(--accent-rgb), 0.035), transparent 7rem);
+}
+
+.content {
+  --col-w: 360px;
+  --text: var(--content);
+  font-size: var(--text);
+  line-height: 1.45;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0.85rem 1rem 1rem;
+  column-width: var(--col-w);
+  column-gap: 1.35rem;
+  column-rule: 1px solid color-mix(in srgb, var(--rule) 80%, transparent);
+  column-fill: auto; /* fill first column, then next — enables horizontal growth */
+  /* width grows with number of columns */
+  width: max-content;
+  max-width: none;
+}
+.content > :first-child { margin-top: 0; }
+
+.content h1 {
+  font-family: var(--font-serif);
+  font-size: 1.62rem;
+  font-weight: 400;
+  letter-spacing: var(--track-display);
+  line-height: var(--lh-display);
+  color: var(--head);
+  margin: 0.5rem 0 0.5rem;
+}
+.content h1.page-title {
+  margin: 0 0 .5rem;
+  padding-bottom: .3rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--rule) 90%, transparent);
+  break-after: avoid;
+}
+
+.content h2 {
+  font-family: var(--font-serif);
+  font-size: 1.24rem;
+  font-weight: 400;
+  letter-spacing: var(--track-display);
+  line-height: var(--lh-display);
+  color: var(--head);
+  margin: 0.95rem 0 0.45rem;
+  /* Same rule as <hr>: full-width hairline in --rule at 90% */
+  border-bottom: 1px solid color-mix(in srgb, var(--rule) 90%, transparent);
+  padding-bottom: .32rem;
+  break-after: avoid;
+  break-inside: avoid;
+}
+
+/* "GM moves for villains:" — the threat type's icon leads the line.
+   Styled as a heading rather than as bold body: Awery has one weight. */
+.content p.threat-moves {
+  margin: 0.7rem 0 0.32rem;
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: var(--track-display);
+  line-height: var(--lh-display);
+  color: var(--head);
+  break-after: avoid;
+}
+.content p.threat-moves strong,
+.content p.threat-moves em {
+  font-weight: 400;
+  font-style: normal;
+  color: inherit;
+}
+.content p.threat-moves .book-icon {
+  width: 1.15em;
+  height: 1.15em;
+  vertical-align: -0.15em;
+  margin-right: 0.3em;
+  opacity: 1;
+}
+
+/* Numbered steps — the book prints the number on a rounded plaque */
+.content h2 .step-badge {
+  display: inline-block;
+  min-width: 1.9em;
+  margin-right: 0.15em;
+  padding: 0.05em 0.4em;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--head);
+  font-size: 0.82em;
+  letter-spacing: 0.02em;
+  text-align: center;
+  vertical-align: 0.08em;
+}
+
+.content h3 {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: var(--track-display);
+  line-height: var(--lh-display);
+  color: var(--head);
+  margin: 0.7rem 0 0.32rem;
+  break-after: avoid;
+  break-inside: avoid;
+}
+
+/* Category icons (game-icons.net CC BY 3.0 — white on transparent SVGs).
+   Recolor white glyphs to --accent via filter chain. */
+.book-icon {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  vertical-align: -0.15em;
+  margin-right: 0.3em;
+  object-fit: contain;
+  /* white → near-black → parchment matching --head (#cfbea2) */
+  filter: brightness(0) saturate(100%)
+    invert(100%) sepia(100%) saturate(767%) hue-rotate(311deg)
+    brightness(100%) contrast(62%);
+  opacity: 0.95;
+}
+h2 .book-icon,
+h3 .book-icon,
+.stat-name .book-icon {
+  width: 1.05em;
+  height: 1.05em;
+}
+
+.content h4 {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: var(--track-display);
+  line-height: var(--lh-display);
+  color: var(--head);
+  margin: 0.55rem 0 0.25rem;
+}
+
+.content p { margin: 0.35rem 0; orphans: 3; widows: 3; }
+
+.content ul, .content ol {
+  margin: 0.3rem 0 0.45rem;
+  padding-left: 1.1rem;
+}
+.content li { margin: 0.12rem 0; break-inside: avoid; }
+
+.content blockquote {
+  margin: 0.5rem 0;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-panel);
+  background: var(--panel);
+  background-image: var(--card-wash);
+  color: var(--quote);
+  break-inside: avoid;
+}
+
+.content code {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: .9em;
+  background: var(--bg-elev);
+  padding: .1em .35em;
+  border-radius: 3px;
+}
+
+.content strong { color: #f7f3e8; }
+/* A quoted passage is set in its own voice; bold inside it emphasises within
+   that voice rather than jumping back to the body's brighter ink. */
+.content blockquote strong { color: inherit; }
+
+.content hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 0.65rem 0 0.55rem;
+  break-inside: avoid;
+  column-span: none;
+  opacity: 0.9;
+}
+
+.content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.35rem 0;
+  font-size: var(--text);
+  /* may span columns: a tall block that refuses to break leaves the column before it empty */
+  break-inside: auto;
+}
+.content th, .content td {
+  border: 1px solid var(--rule);
+  padding: 0.22rem 0.4rem;
+  text-align: left;
+  vertical-align: top;
+}
+.content th {
+  background: var(--bg-elev);
+  color: var(--head);
+  font-family: var(--font-serif);
+  white-space: nowrap;
+  width: 2.4rem;
+}
+
+/* Trade / value tables */
+.value-table {
+  /* may span columns: a tall block that refuses to break leaves the column before it empty */
+  break-inside: auto;
+  margin: 0.45rem 0 0.65rem;
+  background: var(--panel);
+  background-image: var(--card-wash);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  overflow: hidden;
+  width: 100%;
+}
+.value-table-head th {
+  padding: 0.35rem 0.45rem;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  background: rgba(var(--accent-rgb), 0.09);
+  font-family: var(--font-serif);
+  color: var(--head);
+  font-weight: 400;
+  font-size: 1.05rem;
+  text-align: left;
+  white-space: normal;
+  width: auto;
+}
+/* "value" sits over the value column, as it does in the books */
+.value-table-head th.vth-val {
+  text-align: right;
+  white-space: nowrap;
+  width: 2.75rem;
+}
+.value-table table {
+  width: 100%;
+  margin: 0;
+  border: none;
+  font-size: var(--text);
+}
+.value-table td {
+  border-left: none;
+  border-right: none;
+  padding: 0.2rem 0.45rem;
+  vertical-align: top;
+}
+.value-table tr:last-child td { border-bottom: none; }
+.value-table td.val {
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 700;
+  color: var(--head);
+  width: 2.75rem;
+  font-variant-numeric: tabular-nums;
+}
+.value-table .value-note {
+  padding: 0.28rem 0.5rem;
+  border-top: 1px solid var(--rule);
+  font-size: var(--text);
+  color: var(--muted);
+}
+
+/* Book-style lists rendered with traditional bullets */
+.content ul.bullets,
+.content ul.questions {
+  list-style: disc outside;
+  margin: 0.3rem 0 0.5rem;
+  padding-left: 1.2rem;
+}
+.content ul.bullets li,
+.content ul.questions li {
+  margin: 0.16rem 0;
+  break-inside: avoid;
+}
+.content ul.bullets li::marker,
+.content ul.questions li::marker {
+  color: var(--head);
+}
+/* Further paragraphs of a list item — the book indents them to the item's
+   text, so they stay inside the <li> rather than ending the list. */
+.content li > p.li-cont {
+  margin: 0.35rem 0 0;
+}
+.content ul.ellipsis {
+  list-style: none;
+  margin: 0.3rem 0 0.5rem;
+  padding-left: 1.55rem;
+}
+.content ul.ellipsis li {
+  position: relative;
+  margin: 0.16rem 0;
+  break-inside: avoid;
+}
+.content ul.ellipsis li::before {
+  content: "…";
+  position: absolute;
+  left: -1.3rem;
+  top: 0;
+  color: var(--muted);
+}
+
+/* Chapter info box (steading summary) */
+.infobox {
+  break-inside: avoid;
+  margin: 0.35rem 0 0.85rem;
+  padding: 0.55rem 0.7rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius-panel);
+  background: var(--panel);
+  background-image: var(--card-wash);
+  box-shadow: var(--shadow-panel);
+  width: 100%;
+  font-size: var(--text);
+}
+.infobox h4 {
+  margin: 0.45rem 0 0.1rem;
+  color: var(--head);
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+}
+.infobox h4:first-child { margin-top: 0; }
+.infobox p { margin: 0.18rem 0; }
+.infobox ul { margin: 0.12rem 0 0.3rem; }
+
+/* Fell-type table headers with no value column ("trade opportunities") */
+.content h3.table-heading {
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+}
+
+/* Roll tables */
+.roll-table {
+  /* may span columns: a tall block that refuses to break leaves the column before it empty */
+  break-inside: auto;
+  margin: 0.45rem 0 0.65rem;
+  background: var(--panel);
+  background-image: var(--card-wash);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  overflow: hidden;
+  width: 100%;
+}
+.roll-table-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid var(--rule);
+  background: rgba(var(--accent-rgb), 0.09);
+  font-family: var(--font-serif);
+  color: var(--head);
+  font-weight: 400;
+  font-size: 1.05rem;
+}
+.roll-table .roll-label { color: var(--head); }
+.roll-table table { margin: 0; border: none; }
+.roll-table th, .roll-table td { border-left: none; border-right: none; }
+.roll-table tr:last-child th,
+.roll-table tr:last-child td { border-bottom: none; }
+
+/* Rolled-result row highlight (set by the dice-roll handler) */
+.roll-table tr.roll-hit > th,
+.roll-table tr.roll-hit > td {
+  background: rgba(var(--accent-rgb), 0.16);
+  animation: roll-hit-flash 0.7s ease-out;
+}
+.roll-table tr.roll-hit > th {
+  color: var(--head);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+@keyframes roll-hit-flash {
+  from { background: rgba(var(--accent-rgb), 0.5); }
+  to   { background: rgba(var(--accent-rgb), 0.16); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .roll-table tr.roll-hit > th,
+  .roll-table tr.roll-hit > td { animation: none; }
+  .index-card,
+  .wiki-preview,
+  a.wiki-link,
+  button.dice-roll { transition: none; }
+  .index-card:hover { transform: none; }
+}
+
+/* Enemy / monster blocks — tight, card-like (arcana wash + elevated shell) */
+.stat-block,
+.hazard-block {
+  break-inside: avoid;
+  margin: 0.4rem 0 0.55rem;
+  padding: 0.45rem 0.6rem 0.5rem;
+  background: var(--panel);
+  background-image: var(--card-wash);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  font-size: var(--text);
+  line-height: 1.28;
+  width: 100%;
+}
+.hazard-block .stat-name {
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  color: var(--head);
+  margin: 0 0 0.25rem;
+  border: none;
+  padding: 0;
+}
+.hazard-block p {
+  margin: 0.25rem 0;
+}
+.hazard-block > :last-child { margin-bottom: 0; }
+.stat-block .roll-table-inline {
+  margin: 0.35rem 0 0.15rem;
+  max-width: none;
+}
+.stat-block .roll-table-inline .roll-table-head {
+  font-size: var(--text);
+}
+.stat-block .stat-name {
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  color: var(--head);
+  margin: 0 0 0.15rem;
+  border: none;
+  padding: 0;
+}
+.stat-block .stat-tags {
+  margin: 0 0 0.2rem;
+  color: var(--muted);
+  font-style: italic;
+  font-size: var(--text);
+}
+.stat-block .stat-stats {
+  margin: 0.15rem 0;
+  color: var(--ink);
+}
+/* Stats break one to a line; the <br> is real. */
+.stat-block .stat-moves {
+  margin: 0.2rem 0 0;
+  padding-left: 1rem;
+}
+.stat-block .stat-moves li {
+  margin: 0.05rem 0;
+}
+.stat-block .stat-note {
+  margin: 0.25rem 0 0;
+  color: var(--ink);
+  font-size: var(--text);
+}
+/* Deep-link :target — scroll still works; no outline flash on jump */
+
+/* --- Section links -------------------------------------------------------
+   The § after a heading copies a link to that section (the heading itself
+   does too). It is held back until the heading is hovered so it does not
+   litter a page being read; where nothing hovers it simply stays out, since
+   a tap on the heading copies just as well.
+   ------------------------------------------------------------------------ */
+.section-link {
+  margin-left: 0.3em;
+  font-family: var(--font-serif);
+  font-size: 0.8em;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--accent);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+.content h2:hover > .section-link,
+.content h3:hover > .section-link,
+.site-main h2:hover > .section-link,
+.site-main h3:hover > .section-link,
+.section-link:focus-visible {
+  opacity: 0.7;
+}
+.section-link:hover {
+  opacity: 1;
+  color: var(--link-hover);
+}
+/* A copied heading flashes once, so it is plain which link was taken. */
+.link-copied {
+  animation: section-link-flash 0.9s ease-out;
+  border-radius: 2px;
+}
+@keyframes section-link-flash {
+  from { background: rgba(var(--accent-rgb), 0.42); }
+  to   { background: transparent; }
+}
+@media (hover: none) {
+  /* No hover to reveal it, and a heading is a wide enough target on its own. */
+  .section-link { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .link-copied { animation: none; }
+}
+@media print {
+  .section-link { display: none; }
+}
+
+
+/* Images flow into the rightmost columns after text */
+
+/* Index: normal vertical flow, no horizontal columns */
+body:has(.index-grid) {
+  overflow: auto;
+}
+body:has(.index-grid) .layout {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+}
+body:has(.index-grid) .main-wrap {
+  overflow: visible;
+}
+body:has(.index-grid) .content-scroll {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  border: none;
+  background: transparent;
+}
+body:has(.index-grid) .content {
+  width: auto;
+  height: auto;
+  column-width: auto;
+  columns: 1;
+  padding: 1rem 1.25rem 2rem;
+}
+/* The home page scrolls the document rather than a pane, so the sidebar has
+   to hold itself against the viewport — left stretched, it scrolls away with
+   the cards. Above the drawer breakpoint only: below it the sidebar is a
+   fixed off-canvas panel and must stay one. */
+@media (min-width: 861px) {
+  body:has(.index-grid) .sidebar {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    height: 100dvh;
+  }
+}
+
+/*
+ * Phones: one column fits, so the horizontal "scroll of pages" has nothing
+ * left to page through — read it top-to-bottom instead. The maps strip and
+ * the index keep their own layouts (both are more specific than these).
+ */
+/* The steading playbook is tables of boxes and textareas, not prose, so it
+   takes its own column measure. The JS measure reads column-width, so it
+   follows. (The other sheets read better at the ordinary measure.) */
+.content:has([data-sheet="steading"]) { --col-w: 420px; }
+.content:has([data-sheet="steading"]) textarea.wiki-field { min-height: 0; height: auto; }
+@media (max-width: 700px) {
+  .content, .content:has([data-sheet="steading"]) { --col-w: min(360px, calc(100vw - 2rem)); }
+  .content-scroll {
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .content:not(.maps-page) {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    min-height: 100%;
+    columns: 1;
+    column-width: auto;
+    column-rule: none;
+    /* clear the home indicator / gesture bar under the last line */
+    padding-bottom: calc(2.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Wiki links */
+a.wiki-link {
+  color: var(--link);
+  /* A real underline, at the font's own position and weight — a border sits
+     at the bottom of the inline box, a whole line-height below the text. */
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--link-rgb), .62);
+  transition: color .12s, text-decoration-color .12s, background .12s;
+}
+a.wiki-link:hover {
+  color: var(--link-hover);
+  text-decoration-color: var(--link-hover);
+  background: rgba(var(--link-rgb), .12);
+}
+a.wiki-link strong {
+  color: inherit;
+  font-weight: 700;
+}
+
+/* Dice */
+button.dice-roll {
+  display: inline;
+  font: inherit;
+  font-family: var(--font-serif);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  font-synthesis-weight: none;
+  color: var(--head);
+  background: linear-gradient(180deg, #7a2038, #5d142b 55%, #410d1e);
+  border: 1px solid #410d1e;
+  border-radius: 3px;
+  /* Kept inside the line box: a button is inline-block whatever `display`
+     says, so its padding, border and line-height all add to the line's
+     height. No vertical padding, a tight line-height, and a negative
+     vertical margin that pulls the margin box well under every line-height
+     the wiki uses — the line it sits on stays where it was. */
+  padding: 0 .4em;
+  /* The tightest line the wiki sets is 1.2; the margin box contributes
+     1.15em + 2px - .4em, so the button is never the tallest thing on it. */
+  margin: -.2em .1em;
+  cursor: pointer;
+  line-height: 1.15;
+  box-shadow: 0 1px 0 rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.18);
+  vertical-align: baseline;
+}
+button.dice-roll:hover {
+  filter: brightness(1.08);
+}
+button.dice-roll:active {
+  transform: translateY(1px);
+}
+button.dice-roll.rolling {
+  animation: dice-pulse .35s ease;
+}
+@keyframes dice-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+/* ---- Maps page: full-bleed, no text ---- */
+/* One full-height horizontal strip that scrolls with the page's default
+   horizontal scroller. Neutralise the multi-column "scroll of pages" layout. */
+main.maps-page {
+  display: block;
+  column-count: 1;
+  column-width: auto;
+  column-rule: none;
+  column-gap: 0;
+  width: max-content;
+  max-width: none;
+  height: 100%;
+  padding: 0;
+}
+.content-scroll:has(> main.maps-page) {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+/* All maps tiled side by side, no gaps, at full height. Book spreads first,
+   campaign maps after. width:max-content so the strip shrink-wraps its maps
+   (no dead space to scroll into on the right). */
+.maps-strip {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  width: max-content;
+  height: 100%;
+  background: #fff;
+}
+.map-canvas {
+  position: relative;
+  flex: 0 0 auto;
+  height: 100%;
+  line-height: 0;
+}
+.map-canvas[data-full] { cursor: zoom-in; }
+.maps-strip img {
+  display: block;
+  height: 100%;
+  width: auto;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+body.pins-adding .map-canvas { cursor: crosshair; }
+
+/* Pin toolbar (fixed, top-right so it clears the sidebar) */
+.map-tools {
+  position: fixed;
+  top: 0.6rem;
+  right: 1rem;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+}
+.map-add {
+  background: var(--bg-hover);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  font: 600 var(--text) var(--font-sans);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.map-add[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--head);
+  border-color: var(--accent);
+}
+.map-colors { display: flex; gap: 0.3rem; }
+.map-color {
+  width: 1.2rem;
+  height: 1.2rem;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--sw);
+  border: 2px solid transparent;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.4);
+  cursor: pointer;
+}
+.map-color[aria-pressed="true"] {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px var(--sw);
+}
+
+/* Pins + labels dropped onto a map */
+.map-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 5;
+  line-height: normal;
+  white-space: nowrap;
+}
+.pin-dot {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--pin-color);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.55);
+  cursor: grab;
+}
+.pin-dot:active { cursor: grabbing; }
+.pin-label {
+  display: inline-block;
+  background: rgba(20,16,12,.82);
+  color: #fff;
+  font: 600 var(--text)/1.3 var(--font-sans);
+  padding: 2px 6px;
+  border-radius: 4px;
+  /* Grow to fit the label; keep it on one line so the full text always shows. */
+  white-space: pre;
+  max-width: 40ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: text;
+}
+.pin-label:empty::before {
+  content: attr(data-placeholder);
+  opacity: 0.7;
+}
+.pin-label:focus {
+  outline: none;
+  background: rgba(20,16,12,.95);
+  box-shadow: 0 0 0 2px var(--pin-color);
+}
+.pin-del {
+  display: none;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(20,16,12,.82);
+  color: #fff;
+  font: 700 var(--text)/1 var(--font-sans);
+  cursor: pointer;
+}
+.map-pin:hover .pin-del,
+.map-pin:focus-within .pin-del { display: block; }
+
+.dice-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  background: var(--bg-elev);
+  border: 1px solid var(--accent);
+  color: var(--ink);
+  padding: .65rem 1.15rem;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  z-index: 1000;
+  transition: transform .25s ease, opacity .25s ease;
+  opacity: 0;
+  pointer-events: none;
+  /* Pinned at the halfway mark, the box could only ever use the half of the
+     screen to the right of it — on a phone that squeezed a disadvantaged roll
+     into a tall, narrow pill. Let it size to its text and take nearly the
+     whole width when it has to. */
+  width: max-content;
+  max-width: min(92vw, 42rem);
+  text-align: center;
+}
+.dice-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+/* On a phone a roll with an aside wants two lines, and a 999px radius on a
+   two-line box reads as a lozenge rather than a label. */
+@media (max-width: 640px) {
+  .dice-toast {
+    max-width: 94vw;
+    border-radius: 1.1rem;
+    padding: .55rem .85rem;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+  .dice-toast .roll-note {
+    display: block;
+    margin-left: 0;
+    margin-top: .1rem;
+  }
+}
+.dice-toast .result {
+  color: var(--head);
+  font-weight: 400;
+  font-size: 1.2em;
+  margin-left: .35rem;
+}
+
+/* Arcana cards */
+.arcana-card {
+  break-inside: avoid;
+  margin: 0.5rem 0 1.25rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+  /* The wash sits on .arcana-front, so the card itself is just the panel ground. */
+  background: var(--panel);
+  box-shadow: var(--shadow-panel);
+  overflow: hidden;
+  max-width: 36rem;
+}
+.arcana-card.arcana-major {
+  max-width: 42rem;
+}
+.arcana-face {
+  padding: 0.85rem 1rem 1rem;
+}
+.arcana-front {
+  border-bottom: 1px solid var(--rule);
+  background: var(--card-wash-deep);
+}
+.arcana-back-face {
+  background: rgba(0, 0, 0, 0.12);
+}
+/* Single-line face header: NAME — FRONT / REVERSE (or REVERSE alone on majors).
+   Must beat `.content h2` / `.content h3` (serif) specificity. */
+.content h2.arcana-title-line,
+.content h3.arcana-title-line,
+.wiki-preview h2.arcana-title-line,
+.wiki-preview h3.arcana-title-line,
+h2.arcana-title-line,
+h3.arcana-title-line,
+.arcana-title-line {
+  margin: 0 0 0.5rem;
+  padding: 0;
+  border: none;
+  border-bottom: none;
+  background-image: none;
+  font-family: var(--font-serif);
+  font-size: 1.24rem;
+  font-weight: 400;
+  font-synthesis-weight: none;
+  letter-spacing: var(--track-display);
+  line-height: var(--lh-display);
+  color: var(--head);
+  break-after: avoid;
+  break-inside: avoid;
+}
+.arcana-title-line .arcana-title-name,
+.arcana-title-line .arcana-title-sep,
+.arcana-title-line .arcana-title-face {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+}
+.arcana-title-sep {
+  margin: 0 0.35em;
+  letter-spacing: normal;
+}
+/* Legacy class names (pre-title-line) — keep readable if any old HTML remains */
+.arcana-face-label {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-serif);
+  font-size: 1.24rem;
+  font-weight: 400;
+  font-synthesis-weight: none;
+  letter-spacing: var(--track-display);
+  line-height: var(--lh-display);
+  color: var(--head);
+}
+.arcana-discovery,
+.arcana-power-name {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 400;
+  font-synthesis-weight: none;
+  color: var(--head);
+}
+.arcana-tags {
+  margin: 0 0 0.55rem;
+  font-size: var(--text);
+  font-style: italic;
+  color: var(--muted);
+}
+.arcana-unlock {
+  margin-top: 0.65rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.18);
+}
+.arcana-unlock-intro {
+  margin: 0 0 0.4rem;
+  font-size: var(--text);
+}
+.arcana-move {
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px dashed color-mix(in srgb, var(--rule) 80%, transparent);
+}
+.arcana-move:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.arcana-move p {
+  margin: 0 0 0.35rem;
+  font-size: var(--text);
+}
+.arcana-picks {
+  margin: 0.25rem 0 0;
+  padding-left: 1.15rem;
+  font-size: var(--text);
+}
+.arcana-picks li {
+  margin: 0.15rem 0;
+}
+.arcana-sub {
+  margin: 0.75rem 0 0.35rem;
+  font-size: 1rem;
+  color: var(--head);
+}
+.arcana-note {
+  margin: 0.35rem 0 0;
+  font-size: var(--text);
+  color: var(--muted);
+}
+.arcana-major-body {
+  padding: 0 0.15rem;
+  font-size: var(--text);
+}
+.arcana-consequences {
+  margin: 0.75rem 1rem 1rem;
+}
+.arcana-track {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  margin: 0.35rem 0 0.75rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.15);
+  font-size: var(--text);
+}
+.arcana-track .track-label {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-synthesis-weight: none;
+  letter-spacing: var(--track-display);
+  color: var(--head);
+  margin-right: 0.25rem;
+}
+.arcana-track .track-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+/* The checkbox is already a box; the track needs no frame around each one. */
+.arcana-track .track-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.arcana-track .track-step input.wiki-check {
+  margin: 0;
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.arcana-follower {
+  margin: 0.65rem 0 0.85rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.2);
+}
+.arcana-follower .arcana-sub {
+  margin-top: 0;
+}
+.arcana-stat {
+  margin: 0.2rem 0;
+  font-size: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.arcana-moves-list {
+  margin-top: 0.4rem;
+}
+/* Arcana pages: normal vertical flow, left-aligned (not multi-column).
+   Must target .content (not body:has) so hover previews that inject
+   .arcana-card into #wiki-preview do not reflow gazetteer pages. */
+.content:has(.arcana-card) {
+  columns: 1;
+  column-count: 1;
+  column-width: auto;
+  column-gap: normal;
+  column-rule: none;
+  width: 100%;
+  max-width: 42rem;
+  height: auto;
+  min-height: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+.content:has(.arcana-card) .arcana-card {
+  break-inside: auto;
+  margin-left: 0;
+  margin-right: 0;
+  max-width: none;
+}
+.content-scroll:has(.arcana-card) {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Steading improvements + requirement checkboxes */
+.steading-improvement,
+.requirement-block {
+  break-inside: avoid;
+  margin: 0.75rem 0 1rem;
+  padding: 0.65rem 0.8rem 0.75rem;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-panel);
+  background: var(--panel);
+  background-image: var(--card-wash);
+  box-shadow: var(--shadow-panel);
+}
+.si-kind {
+  margin: 0 0 0.2rem;
+  font-family: var(--font-serif);
+  font-size: var(--text);
+  font-weight: 400;
+  font-synthesis-weight: none;
+  letter-spacing: 0.06em;
+  color: var(--head);
+}
+.si-title {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-serif);
+  font-size: 1.12rem;
+  font-weight: 400;
+  color: var(--head);
+  letter-spacing: 0.02em;
+}
+.si-blurb {
+  margin: 0 0 0.45rem;
+  font-style: italic;
+  color: var(--muted, #6b6560);
+  font-size: var(--text);
+}
+/* Not converted to the display face: this is a full lead-in sentence, not a
+   label, and 15 words of small caps lose the ascender/descender shapes that
+   make a line scannable. */
+.si-requires {
+  margin: 0.45rem 0 0.3rem;
+  font-weight: 600;
+  font-size: var(--text);
+}
+ul.check-list {
+  list-style: none;
+  margin: 0.15rem 0 0.5rem;
+  padding: 0;
+}
+li.check-item {
+  margin: 0.2rem 0;
+}
+li.check-item label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  cursor: pointer;
+  line-height: 1.35;
+  font-size: var(--text);
+}
+li.check-item input.wiki-check {
+  margin: 0.2rem 0 0;
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+li.check-item input.wiki-check:checked + span {
+  text-decoration: line-through;
+  opacity: 0.72;
+}
+.steading-improvement > p {
+  margin: 0.4rem 0 0;
+  font-size: var(--text);
+}
+
+/* Artifact / tagged-discovery blocks */
+.discovery-block {
+  break-inside: avoid;
+  margin: 0.5rem 0 0.7rem;
+  padding: 0.5rem 0.65rem 0.55rem;
+  background: var(--panel);
+  background-image: var(--card-wash);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--link);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  width: 100%;
+  font-size: var(--text);
+  line-height: 1.35;
+}
+.discovery-block .discovery-name {
+  margin: 0 0 0.1rem;
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  color: var(--link);
+  border: none;
+  padding: 0;
+}
+.discovery-block .discovery-tags {
+  margin: 0 0 0.25rem;
+  color: var(--muted);
+  font-style: italic;
+  font-size: var(--text);
+}
+.discovery-block > p { margin: 0.25rem 0; }
+.discovery-block .discovery-note {
+  margin: 0.3rem 0 0;
+  color: var(--ink);
+}
+.discovery-block > :last-child { margin-bottom: 0; }
+
+/* Custom move blocks (ASK AROUND, CAROUSE, RECRUIT, …) */
+.move-block {
+  break-inside: avoid;
+  margin: 0.6rem 0 0.85rem;
+  padding: 0.55rem 0.7rem 0.65rem;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--link);
+  border-radius: var(--radius-panel);
+  background: var(--panel);
+  background-image: var(--card-wash);
+  box-shadow: var(--shadow-panel);
+  width: 100%;
+}
+.move-block .move-name {
+  margin: 0 0 0.3rem;
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--head);
+  border: none;
+  padding: 0;
+}
+.move-block .move-trigger {
+  margin: 0 0 0.35rem;
+  font-style: italic;
+  color: var(--ink);
+}
+.move-block > ul {
+  margin: 0.25rem 0 0.35rem;
+}
+.move-block > p { margin: 0.3rem 0; }
+.move-block > :last-child { margin-bottom: 0; }
+
+/* Hover preview (Wikipedia-style) — shell owns the frame/wash;
+   nested content cards drop their own chrome to avoid double frames. */
+.wiki-preview {
+  --text: var(--content);
+  position: fixed;
+  z-index: 900;
+  width: min(36rem, calc(100vw - 1.5rem));
+  max-height: min(28rem, calc(100vh - 2rem));
+  overflow: auto;
+  background: var(--panel);
+  background-image: var(--card-wash-deep);
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--accent);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .12s ease, transform .12s ease;
+}
+/* An arcanum's card runs long, so it gets more height — but the same width
+   as every other preview. */
+.wiki-preview.pv-arcana {
+  max-height: min(80vh, 42rem);
+}
+.wiki-preview.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.wiki-preview .pv-excerpt a.wiki-link {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--link-rgb), .5);
+}
+.wiki-preview .pv-excerpt a.wiki-link:hover {
+  color: var(--link-hover);
+  text-decoration-color: var(--link-hover);
+}
+.wiki-preview .pv-title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--head);
+  padding: .55rem .9rem .3rem;
+  margin: 0;
+}
+.wiki-preview .pv-body {
+  display: flex;
+  gap: .9rem;
+  /* same box as .pv-full below, so simple and deep-link previews agree */
+  padding: .3rem .9rem .85rem;
+  /* match main content type */
+  font-size: var(--text);
+  color: var(--ink);
+  line-height: 1.4;
+}
+.wiki-preview .pv-thumb {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  filter: invert(1) hue-rotate(180deg);
+}
+.wiki-preview .pv-excerpt {
+  margin: 0;
+  white-space: pre-line;
+  display: -webkit-box;
+  -webkit-line-clamp: 16;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.wiki-preview .pv-kind {
+  font-size: var(--text);
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  margin-left: 0.35rem;
+  font-family: var(--font-serif);
+}
+/* Full section/stat-block deep-link preview */
+.wiki-preview .pv-full {
+  display: block;
+  padding: 0.55rem 0.9rem 0.85rem;
+  max-height: min(22rem, calc(100vh - 6rem));
+  overflow: auto;
+  font-size: var(--text);
+  line-height: 1.4;
+  color: var(--ink);
+}
+.wiki-preview.pv-arcana .pv-full {
+  position: relative;
+  max-height: none;
+  padding: 0.55rem 0.65rem 0.75rem;
+}
+/* Flatten nested cards inside previews: shell is the only frame. */
+.wiki-preview .pv-full .arcana-card,
+.wiki-preview .pv-full .stat-block,
+.wiki-preview .pv-full .hazard-block,
+.wiki-preview .pv-full .discovery-block,
+.wiki-preview .pv-full .move-block,
+.wiki-preview .pv-full .steading-improvement,
+.wiki-preview .pv-full .requirement-block,
+.wiki-preview .pv-full .infobox,
+.wiki-preview .pv-full .value-table,
+.wiki-preview .pv-full .roll-table {
+  margin: 0;
+  max-width: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  background-image: none;
+}
+.wiki-preview .pv-full .stat-block,
+.wiki-preview .pv-full .hazard-block,
+.wiki-preview .pv-full .discovery-block,
+.wiki-preview .pv-full .move-block,
+.wiki-preview .pv-full .steading-improvement,
+.wiki-preview .pv-full .requirement-block,
+.wiki-preview .pv-full .infobox {
+  padding: 0;
+}
+.wiki-preview .pv-full .arcana-face {
+  padding: 0.45rem 0.25rem 0.55rem;
+}
+.wiki-preview .pv-full .arcana-front,
+.wiki-preview .pv-full .arcana-back-face {
+  background: transparent;
+}
+.wiki-preview .pv-full .arcana-unlock {
+  background: rgba(0, 0, 0, 0.22);
+}
+.wiki-preview .pv-full > :first-child { margin-top: 0; }
+.wiki-preview .pv-full .stat-name,
+.wiki-preview .pv-full .discovery-name,
+.wiki-preview .pv-full .move-name {
+  font-size: 1.1rem;
+}
+.wiki-preview .pv-full .value-table-head th,
+.wiki-preview .pv-full .roll-table-head {
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+  /* .stat-name/.discovery-name/.move-name step up to 1.1rem here — match. */
+  font-size: 1.1rem;
+}
+/* keep the cells flush with the head they're aligned under */
+.wiki-preview .pv-full .value-table td {
+  padding-left: 0;
+  padding-right: 0;
+}
+/* Match .content h2/h3 serif headings (previews are outside .content). */
+.wiki-preview .pv-full h2,
+.wiki-preview .pv-full h3 {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--rule) 90%, transparent);
+  padding-bottom: 0.3rem;
+  color: var(--head);
+}
+/* Named moves / section heads inside arcana cards — same as page view. */
+.wiki-preview .pv-full h3.arcana-sub {
+  margin: 0.75rem 0 0.35rem;
+  padding: 0;
+  border: none;
+  border-bottom: none;
+  background-image: none;
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  font-weight: 400;
+  color: var(--head);
+  letter-spacing: normal;
+  text-transform: none;
+}
+/* Arcana face headers: beat the generic h2/h3 rule above; same size as pages. */
+.wiki-preview .pv-full h2.arcana-title-line,
+.wiki-preview .pv-full h3.arcana-title-line {
+  margin: 0 0 0.5rem;
+  padding: 0;
+  border: none;
+  border-bottom: none;
+  background-image: none;
+  font-family: var(--font-serif);
+  /* names/table heads step up to 1.1rem in a preview; the face heading leads. */
+  font-size: 1.28rem;
+  font-weight: 400;
+  font-synthesis-weight: none;
+  letter-spacing: var(--track-display);
+  line-height: var(--lh-display);
+  color: var(--head);
+}
+.wiki-preview .pv-full p { margin: 0.35rem 0; }
+.wiki-preview .pv-full ul { margin: 0.3rem 0; padding-left: 1.1rem; }
+.wiki-preview .pv-loading {
+  padding: 1.25rem;
+  color: var(--muted);
+  font-size: var(--text);
+}
+.wiki-preview .pv-missing {
+  color: var(--muted);
+  font-style: italic;
+}
+
+
+/* Index */
+/* The prose now sits under the cards, so it is a footer, not a hero. */
+.index-hero {
+  padding: 1.4rem 0 1.6rem;
+  margin-top: 0.6rem;
+  border-top: 1px solid var(--rule);
+  max-width: 44rem;
+}
+.index-hero p.lede {
+  color: var(--quote);
+  font-size: 1.08rem;
+  line-height: 1.5;
+  max-width: 40rem;
+  margin: 0;
+}
+/* Caveat under the home lede: the extraction is imperfect, PRs welcome. */
+.index-hero p.index-note {
+  margin: 0.9rem 0 0;
+  padding: 0.7rem 0.9rem;
+  max-width: 40rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent-deep);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.index-hero p.index-note strong { color: var(--head); }
+
+/* Licensing statement — say it before anyone has to ask. */
+.index-hero p.index-license {
+  margin: 0.75rem 0 0;
+  max-width: 40rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.index-hero p.index-license strong { color: var(--quote); }
+.index-hero p.index-license a { color: var(--link); }
+.index-hero p.index-license a:hover { color: var(--link-hover); }
+.index-hero p.index-note a { color: var(--link); }
+.index-hero p.index-note a:hover { color: var(--link-hover); }
+
+.index-hero p.lede em {
+  font-style: italic;
+  color: var(--ink);
+}
+.index-hero p.lede strong {
+  color: var(--head);
+  font-weight: 700;
+}
+.index-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: .7rem;
+  margin: 1.15rem 0 1.75rem;
+}
+.index-card {
+  display: block;
+  background: var(--panel);
+  background-image: var(--card-wash);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  padding: .8rem .95rem .85rem;
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color .14s ease, background .14s ease, box-shadow .14s ease, transform .14s ease;
+}
+.index-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--rule));
+  background: var(--bg-hover);
+  background-image: var(--card-wash-deep);
+  box-shadow: var(--shadow-soft), inset 3px 0 0 var(--accent);
+  transform: translateY(-1px);
+}
+.index-card .card-title {
+  font-family: var(--font-serif);
+  color: var(--head);
+  font-weight: 400;
+  font-size: 1.1rem;
+  letter-spacing: 0.01em;
+  margin: 0 0 .4rem;
+}
+.index-card .card-excerpt {
+  font-size: var(--text);
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.45;
+}
+
+/* Mobile */
+@media (max-width: 860px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    transition: transform .2s ease;
+    box-shadow: var(--shadow);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-toggle { display: inline-block; }
+  /* The open drawer slides in under the fixed toggle — the hamburger would
+     sit on top of the sidebar's own head. Hide it; tapping the scrim closes. */
+  body.sidebar-open .sidebar-toggle { display: none; }
+  .main-wrap { padding: 0; }
+  .content:not(.maps-page),
+  body:has(.index-grid) .content { padding-top: 2.85rem; }
+  body.sidebar-open::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 15;
+  }
+}
+
+@media print {
+  .sidebar, .sidebar-toggle, .dice-toast, .wiki-preview { display: none !important; }
+  .main-wrap { max-width: none; }
+  html, body { height: auto; overflow: visible; color-scheme: light; }
+  body { background: #fff; color: #111; background-image: none; }
+  .content h1, .content h2 { color: #333; }
+  .content-scroll { height: auto; overflow: visible; }
+  a.wiki-link { color: #000; border: none; text-decoration: underline; }
+  button.dice-roll {
+    background: none;
+    border: none;
+    color: inherit;
+    padding: 0;
+    box-shadow: none;
+    font-weight: inherit;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Display face normalisation (Awery SmallCaps)
+ *
+ * Awery ships a single weight, so every `font-weight: 600/700` above would be
+ * rendered as synthetic (smeared) bold, so every rule here sets weight 400 and
+ * turns synthesis off, which also stops the fallback serif reintroducing it.
+ * Small caps also need looser tracking
+ * than lowercase, so labels that carried none get the display default.
+ * Rules that already set a deliberate tracking (kickers at 0.12em) keep it.
+ * ------------------------------------------------------------------------ */
+.wiki-title,
+.toc li.nav-book-label,
+.site-refs-label,
+.related-sites .ra-label,
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content th,
+.value-table-head th,
+.infobox h4,
+.roll-table-head,
+.hazard-block .stat-name,
+.stat-block .stat-name,
+.dice-toast,
+.si-title,
+.discovery-block .discovery-name,
+.move-block .move-name,
+.wiki-preview .pv-title,
+.wiki-preview .pv-full h2,
+.wiki-preview .pv-full h3,
+.index-card .card-title {
+  font-weight: 400;
+  font-synthesis-weight: none;
+}
+
+.content th,
+.value-table-head th,
+.infobox h4,
+.roll-table-head,
+.hazard-block .stat-name,
+.stat-block .stat-name,
+.dice-toast,
+.discovery-block .discovery-name,
+.wiki-preview .pv-title,
+.wiki-preview .pv-full h2,
+.wiki-preview .pv-full h3 {
+  letter-spacing: var(--track-display);
+}
+
+/* ---------- Clickable questions & blanks (GM answer notes) ----------
+   Every "?" and every fill-in-the-blank in the article body is a click
+   target (see wiki.js). The question mark carries a dotted underline so it
+   reads as something to click; the answer it holds is set inline in wine
+   italics — the one hue in the wiki that is neither parchment nor ink, so
+   the GM's writing never reads as part of the book. */
+
+.wiki-q,
+.wiki-blank,
+.wiki-answer {
+  cursor: pointer;
+  border-radius: 2px;
+  /* Widen the hit area without moving a single glyph of the book's type. */
+  padding: 0 .15em;
+  margin: 0 -.15em;
+  transition: background-color .12s ease, color .12s ease;
+}
+.wiki-q:hover,
+.wiki-blank:hover,
+.wiki-q:focus-visible,
+.wiki-blank:focus-visible {
+  background: rgba(var(--head-rgb), .16);
+  color: var(--head);
+  outline: none;
+}
+.wiki-q:focus-visible,
+.wiki-blank:focus-visible,
+.wiki-answer:focus-visible {
+  box-shadow: 0 0 0 1px rgba(var(--head-rgb), .55);
+  outline: none;
+}
+
+/* The standing cue: a question mark you can answer is underlined like a link. */
+.wiki-q {
+  text-decoration: underline dotted rgba(var(--head-rgb), .6);
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+.wiki-q:hover {
+  text-decoration-color: var(--head);
+}
+/* Answered, it turns wine to match the note hanging off it. */
+.wiki-q.has-note {
+  color: var(--answer);
+  font-weight: 700;
+  text-decoration-color: rgba(var(--answer-rgb), .7);
+}
+.wiki-q.has-note:hover {
+  background: rgba(var(--answer-rgb), .16);
+  color: var(--answer);
+  text-decoration-color: var(--answer);
+}
+
+/* The answer, once the editor loses focus: inline, wine, italic. */
+.wiki-answer {
+  color: var(--answer);
+  font-style: italic;
+  white-space: pre-wrap;
+  margin-left: .18em;
+  border-bottom: 1px dotted rgba(var(--answer-rgb), .45);
+}
+.wiki-answer:hover {
+  background: rgba(var(--answer-rgb), .14);
+  border-bottom-color: var(--answer);
+}
+
+/* An empty blank keeps the book's underscores, on the faint wash of a field
+   waiting to be filled — the standing cue that it, too, is clickable. */
+.wiki-blank {
+  background: rgba(var(--head-rgb), .07);
+  letter-spacing: .02em;
+}
+/* A filled blank is the GM's writing, so it reads like any other answer. */
+.wiki-blank.is-filled {
+  color: var(--answer);
+  font-style: italic;
+  background: none;
+  border-bottom: 1px dotted rgba(var(--answer-rgb), .45);
+  letter-spacing: 0;
+}
+.wiki-blank.is-filled:hover {
+  background: rgba(var(--answer-rgb), .14);
+  color: var(--answer);
+  border-bottom-color: var(--answer);
+}
+.wiki-blank.is-editing {
+  padding: 0;
+  background: none;
+}
+/* Typing looks like what it becomes: wine italics either way. */
+.wiki-blank-input {
+  font: inherit;
+  font-style: italic;
+  color: var(--answer);
+  background: rgba(var(--answer-rgb), .10);
+  border: none;
+  border-bottom: 1px solid rgba(var(--answer-rgb), .7);
+  border-radius: 2px 2px 0 0;
+  padding: 0 .2em;
+  min-width: 4ch;
+  max-width: 100%;
+}
+.wiki-blank-input:focus { outline: none; }
+
+/* The note box: same panel skin as the rest of the wiki's furniture. */
+.wiki-note {
+  display: flex;
+  align-items: flex-start;
+  gap: .35rem;
+  margin: .3rem 0 .45rem;
+  padding: .3rem .35rem;
+  background: var(--panel);
+  border: 1px solid rgba(var(--answer-rgb), .28);
+  border-left: 3px solid rgba(var(--answer-rgb), .6);
+  border-radius: var(--radius);
+  break-inside: avoid;
+}
+.wiki-note-input {
+  flex: 1;
+  min-width: 0;
+  resize: none;
+  overflow: hidden;
+  font-family: inherit;
+  font-style: italic;
+  font-size: 1em;
+  line-height: 1.35;
+  color: var(--answer);
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.wiki-note-input:focus { outline: none; }
+.wiki-note-input::placeholder {
+  color: var(--muted);
+  opacity: .8;
+  font-family: var(--font-sans);
+  font-size: .9em;
+}
+.wiki-note-del {
+  flex: none;
+  line-height: 1;
+  font-size: 1rem;
+  color: var(--muted);
+  background: none;
+  border: none;
+  padding: 0 .15rem;
+  cursor: pointer;
+}
+.wiki-note-del:hover { color: var(--danger); }
+
+@media print {
+  .wiki-q, .wiki-blank { background: none; }
+  .wiki-q { text-decoration: none; }
+  .wiki-answer, .wiki-blank.is-filled { color: #5d142b; background: none; }
+  .wiki-note-del { display: none; }
+  .wiki-note { border-color: #999; }
+  .wiki-note-input { color: #000; }
+}
+
+/* ---------- Playbook character sheets ----------
+   The nine sheets are forms, not articles: boxes to write in, a stat block
+   that dims in pairs when a debility is marked, moves you tick to say you
+   have them. Everything the reader fills in is set in the same wine italics
+   as an answer note, so their hand is never mistaken for the book's. */
+
+/* A ticked box on a sheet means a move you *have*. Striking it through (the
+   reading the rest of the wiki gives a checklist) says the opposite. */
+.content.playbook li.check-item input.wiki-check:checked + span {
+  text-decoration: none;
+  opacity: 1;
+  color: var(--head);
+}
+.content.playbook li.check-item input.wiki-check:checked + span strong {
+  color: var(--answer);
+}
+.content.playbook li.check-item:has(input.wiki-check:checked) {
+  border-left: 2px solid rgba(var(--answer-rgb), .8);
+  margin-left: -.5rem;
+  padding-left: calc(.5rem - 2px);
+}
+
+/* A move that hangs under another (Borrow Power under Spirit Tongue). */
+.content li.check-item.is-sub {
+  position: relative;
+  margin-left: 1.15rem;
+}
+.content li.check-item.is-sub::before {
+  content: "";
+  position: absolute;
+  margin: .55rem 0 0 -.75rem;
+  width: .5rem;
+  border-top: 1px solid rgba(var(--head-rgb), .35);
+}
+.content ul.sheet-checks {
+  list-style: none;
+  margin: .15rem 0 .35rem;
+  padding: 0;
+}
+
+/* A move printed already ticked — one you start with, not one you choose. */
+.content li.check-item.is-fixed {
+  display: flex;
+  align-items: flex-start;
+  gap: .45rem;
+  line-height: 1.35;
+}
+.content li.check-item.is-fixed .check-fixed input {
+  margin: .2rem 0 0;
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--answer);
+  opacity: 1;
+  cursor: default;
+}
+.content li.check-item.is-fixed > span:last-child strong {
+  color: var(--answer);
+}
+
+/* ----- write-in boxes -----
+   These sit on the page permanently, the way the sheet prints them, so they
+   are set in the display face rather than in the italics an answer note uses
+   to mark a passing aside. */
+.wiki-field {
+  font: inherit;
+  font-style: normal;
+  letter-spacing: var(--track-display);
+  color: var(--answer);
+  background: rgba(var(--answer-rgb), .07);
+  border: 1px solid rgba(var(--head-rgb), .3);
+  border-radius: var(--radius);
+  padding: .12rem .3rem;
+  min-width: 0;
+  transition: border-color .12s ease, background-color .12s ease;
+}
+.wiki-field::placeholder {
+  color: var(--muted);
+  font-style: normal;
+  opacity: .75;
+}
+.wiki-field:hover { border-color: rgba(var(--head-rgb), .55); }
+.wiki-field:focus {
+  outline: none;
+  border-color: var(--answer);
+  background: rgba(var(--answer-rgb), .12);
+}
+
+/* "I am called…" — the ruled box in the corner of the sheet's first page. */
+.pb-write {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  margin: .7rem 0 .5rem;
+  padding: .45rem .55rem;
+  background: var(--panel);
+  border: 1px solid rgba(var(--head-rgb), .4);
+  border-radius: 10px;
+  break-inside: avoid;
+}
+.pb-write-label {
+  flex: none;
+  font-family: var(--font-serif);
+  letter-spacing: var(--track-display);
+  color: var(--head);
+}
+.pb-write-box {
+  flex: 1;
+  min-width: 4rem;
+  font-size: 1.05em;
+}
+
+/* ----- the stat block ----- */
+.pb-stats {
+  margin: .6rem 0 .8rem;
+  break-inside: avoid;
+}
+.pb-stats > h2 { margin-top: 0; }
+.pb-stats-gloss {
+  margin: .25rem 0 .5rem;
+  font-size: .95em;
+  color: var(--muted);
+}
+.pb-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: .3rem;
+}
+.pb-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .16rem;
+  padding: .3rem .15rem .25rem;
+  background: var(--panel);
+  border: 1px solid rgba(var(--head-rgb), .28);
+  border-radius: var(--radius-panel);
+  text-align: center;
+  transition: border-color .14s ease, opacity .14s ease;
+}
+.pb-stat-name {
+  font-size: .72em;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--head);
+  line-height: 1.1;
+}
+.pb-stat-abbr {
+  font-size: .72em;
+  color: var(--muted);
+  letter-spacing: .04em;
+}
+.pb-stat-box,
+.pb-track-box {
+  width: 100%;
+  text-align: center;
+  font-size: 1.1em;
+  font-style: normal;
+  padding: .18rem .1rem;
+}
+
+/* A stat dimmed by a marked debility: the sheet brackets the pair, so the
+   bracket lights and both boxes go wine-edged and dim. */
+.pb-stat.is-debilitated {
+  border-color: rgba(var(--answer-rgb), .8);
+  background: rgba(var(--answer-rgb), .1);
+}
+.pb-stat.is-debilitated .pb-stat-name,
+.pb-stat.is-debilitated .pb-stat-abbr {
+  color: var(--answer);
+}
+.pb-stat.is-debilitated .pb-stat-box {
+  opacity: .75;
+  text-decoration: line-through;
+  text-decoration-color: rgba(var(--answer-rgb), .7);
+}
+
+/* The three debilities, each on a bracket under the pair it dims. */
+.pb-debilities {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .3rem;
+  margin-top: .1rem;
+}
+.pb-debility {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  padding: .5rem .2rem .1rem;
+  position: relative;
+  cursor: pointer;
+  font-size: .85em;
+  font-style: italic;
+  color: var(--muted);
+}
+/* The bracket itself: a rule across the pair, dropping a tick at each end. */
+.pb-debility::before {
+  content: "";
+  position: absolute;
+  top: .18rem;
+  left: 8%;
+  right: 8%;
+  height: .28rem;
+  border: 1px solid rgba(var(--head-rgb), .3);
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  transition: border-color .14s ease;
+}
+.pb-debility input {
+  width: .95rem;
+  height: .95rem;
+  margin: 0;
+  accent-color: var(--answer);
+  cursor: pointer;
+}
+.pb-debility:hover::before { border-color: rgba(var(--head-rgb), .6); }
+.pb-debility.is-on { color: var(--answer); }
+.pb-debility.is-on::before { border-color: var(--answer); }
+
+.pb-track-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: .3rem;
+  margin-top: .45rem;
+}
+.pb-track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .16rem;
+  padding: .3rem .15rem .25rem;
+  background: var(--panel);
+  border: 1px solid rgba(var(--head-rgb), .28);
+  border-radius: var(--radius-panel);
+}
+.pb-track-name {
+  font-size: .78em;
+  font-weight: 700;
+  color: var(--head);
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* ----- the introductions walkthrough ----- */
+.content ol.pb-steps {
+  list-style: none;
+  margin: .35rem 0 .6rem;
+  padding: 0;
+  counter-reset: none;
+}
+.content li.pb-step {
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  margin: .3rem 0;
+  break-inside: avoid;
+}
+.content li.pb-step > div { flex: 1; min-width: 0; }
+/* The chapter walkthroughs badge a heading; a sheet badges a list item. */
+.content li.pb-step > .step-badge {
+  flex: none;
+  display: inline-block;
+  min-width: 1.7em;
+  margin-top: .06rem;
+  padding: .05em .4em;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--head);
+  font-family: var(--font-serif);
+  font-size: .85em;
+  text-align: center;
+}
+
+@media print {
+  .wiki-field {
+    background: none;
+    border: none;
+    border-bottom: 1px solid #999;
+    color: #000;
+  }
+  .pb-stat, .pb-track, .pb-write { border-color: #999; }
+}
+
+/* ---------- Playbook sheets: spinboxes, roll buttons, the class name ---- */
+
+/* A sheet's title is the name of the class, and it carries the page. */
+.content.playbook h1.pb-title {
+  font-size: 1.75rem;
+}
+
+/* Six cells of equal, fixed width — minmax(0,…) so a long name shrinks the
+   box instead of stretching the grid, and is clipped rather than wrapped. */
+.pb-stat-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+.pb-stat { min-width: 0; }
+.pb-stat-name {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Spinboxes. The steppers are ours, not the browser's — a stat is written
+   "+1" on the sheet, and a native number input will not hold a leading plus.
+   They surface on hover/focus so a row of six still reads as a stat line
+   rather than as a form. */
+.pb-spin {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.pb-spin .wiki-field {
+  font-variant-numeric: tabular-nums;
+}
+.pb-spin-btns {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  display: flex;
+  flex-direction: column;
+  width: .95rem;
+  opacity: 0;
+  transition: opacity .12s ease;
+  pointer-events: none;
+}
+.pb-spin:hover .pb-spin-btns,
+.pb-spin:focus-within .pb-spin-btns {
+  opacity: 1;
+  pointer-events: auto;
+}
+.pb-spin-step {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: .62rem;
+  line-height: 1;
+  color: var(--head);
+  background: rgba(var(--accent-rgb), .85);
+  border: none;
+  cursor: pointer;
+}
+.pb-spin-step:first-child { border-radius: 0 3px 0 0; }
+.pb-spin-step:last-child { border-radius: 0 0 3px 0; }
+.pb-spin-step:hover { background: var(--accent); }
+/* Nothing hovers on a touch screen, so the steppers stay up there. */
+@media (hover: none) {
+  .pb-spin-btns { opacity: 1; pointer-events: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pb-spin-btns { transition: none; }
+}
+
+/* The abbreviation under a stat, and the Damage label, roll. */
+.pb-roll {
+  font: inherit;
+  color: var(--muted);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 0 .28em;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease, border-color .12s ease;
+}
+.pb-stat-abbr.pb-roll {
+  font-size: .72em;
+  letter-spacing: .04em;
+}
+.pb-track-name.pb-roll {
+  font-size: .78em;
+  font-weight: 700;
+  color: var(--head);
+}
+.pb-roll:hover,
+.pb-roll:focus-visible {
+  color: var(--head);
+  background: rgba(var(--accent-rgb), .45);
+  border-color: #410d1e;
+  outline: none;
+}
+.pb-roll.rolling { animation: dice-pulse .35s ease; }
+
+/* The whole box is the hit area — a stat is a thing you click to roll, and
+   aiming at a six-character label under it is fiddly at the table. The box
+   you type in keeps its own cursor, and its steppers keep their own click. */
+.pb-stat,
+.pb-track:has(.pb-roll) {
+  cursor: pointer;
+}
+.pb-stat .wiki-field,
+.pb-track .wiki-field {
+  cursor: text;
+}
+.pb-stat:hover,
+.pb-track:has(.pb-roll):hover {
+  border-color: rgba(var(--head-rgb), .55);
+}
+.pb-stat:hover .pb-roll,
+.pb-track:has(.pb-roll):hover .pb-roll {
+  color: var(--head);
+  background: rgba(var(--accent-rgb), .45);
+  border-color: #410d1e;
+}
+.pb-stat.is-debilitated .pb-stat-abbr.pb-roll { color: var(--answer); }
+.pb-stat.is-debilitated .pb-stat-abbr.pb-roll:hover { color: var(--head); }
+
+/* The aside after a roll: why it was made that way, and what was discarded. */
+.dice-toast .roll-note {
+  margin-left: .5rem;
+  font-size: .8em;
+  color: var(--answer);
+  font-style: italic;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-roll { transition: none; }
+  .pb-roll.rolling { animation: none; }
+}
+
+/* ---------- The index's "it remembers" note ---------- */
+.index-hero p.index-vtt {
+  margin: 0.9rem 0 0;
+  max-width: 40rem;
+  color: var(--ink);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+.index-hero p.index-vtt strong { color: var(--head); }
+/* The home page's own title leads the page, with nothing above it. */
+main.content > h1.page-title:first-child {
+  margin-top: 0;
+  font-size: 2rem;
+}
+
+/* ---------- Dice sound toggle ---------- */
+.sound-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  margin-top: .5rem;
+  padding: .2rem .45rem .2rem .3rem;
+  font-family: var(--font-sans);
+  font-size: .72rem;
+  letter-spacing: .02em;
+  color: var(--muted);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.sound-toggle:hover {
+  color: var(--head);
+  border-color: var(--rule);
+}
+.sound-toggle .sound-off { display: none; }
+.sound-toggle.is-off .sound-on { display: none; }
+.sound-toggle.is-off .sound-off { display: inline; }
+.sound-toggle.is-off { color: var(--muted); opacity: .8; }
+.sound-toggle .sound-label { line-height: 1; }
+
+/* ---------- Campaign sync ----------
+   Beside the dice-sound toggle in the sidebar footer: a dot saying whether
+   this browser is sharing its state with the table, and the panel behind it
+   that sets that up. Both are built by wiki.js, so they appear on generated
+   pages and hand-authored site sheets alike. */
+/* Under the search box: the campaign control, and the dice-sound icon beside
+   it. Whether the table is sharing state is worth seeing at a glance, without
+   scrolling the topic list to its end. */
+.sidebar-tools {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: .55rem;
+}
+
+.sync-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-top: 0;
+  padding: .25rem .45rem .25rem .35rem;
+  font-family: var(--font-sans);
+  font-size: .72rem;
+  letter-spacing: .02em;
+  color: var(--muted);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.sync-toggle:hover {
+  color: var(--head);
+  border-color: var(--rule);
+}
+.sync-toggle .sync-label {
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Not sharing: a hollow ring. Sharing: lit. Unreachable: hollow again, in the
+   wine — a table mid-session is told by a dot, never by a dialog. */
+.sync-dot {
+  width: .5rem;
+  height: .5rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: transparent;
+}
+.sync-toggle.is-on { color: var(--head); }
+.sync-toggle.is-on .sync-dot {
+  border-color: var(--answer);
+  background: var(--answer);
+  box-shadow: 0 0 0 2px rgba(var(--answer-rgb), .18);
+}
+.sync-toggle.is-offline .sync-dot {
+  border-color: var(--answer);
+  background: transparent;
+}
+
+.sync-panel {
+  /* left/top are set by wiki.js, measured off the button and clamped into the
+     viewport — the button is in the sidebar head, not at a fixed corner. */
+  position: fixed;
+  left: 1rem;
+  top: 4rem;
+  z-index: 60;
+  width: min(19rem, calc(100vw - 2rem));
+  padding: .85rem .9rem 1rem;
+  font-family: var(--font-sans);
+  font-size: .78rem;
+  line-height: 1.45;
+  color: var(--muted);
+  background: var(--panel);
+  background-image: var(--card-wash);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+}
+.sync-panel[hidden] { display: none; }
+
+.sync-head {
+  margin: 0 0 .5rem;
+  font-family: var(--font-serif);
+  font-size: .95rem;
+  letter-spacing: .03em;
+  color: var(--head);
+}
+/* The campaign's id: a handle, so it is set where a handle belongs. */
+.sync-id {
+  margin: 0 0 .7rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .72rem;
+  color: var(--muted);
+  word-break: break-all;
+}
+.sync-note {
+  margin: .7rem 0 .35rem;
+  font-size: .72rem;
+  line-height: 1.4;
+  color: var(--muted);
+  opacity: .85;
+}
+
+.sync-field {
+  display: block;
+  margin-bottom: .6rem;
+}
+.sync-field > span {
+  display: block;
+  margin-bottom: .2rem;
+  font-size: .68rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: .8;
+}
+.sync-field input {
+  width: 100%;
+  padding: .32rem .4rem;
+  font-family: inherit;
+  font-size: .75rem;
+  color: var(--link-hover);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+.sync-field input:focus {
+  outline: none;
+  border-color: var(--answer);
+}
+
+.sync-action {
+  display: block;
+  width: 100%;
+  margin-top: .35rem;
+  padding: .34rem .5rem;
+  font-family: inherit;
+  font-size: .76rem;
+  letter-spacing: .02em;
+  color: var(--head);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.sync-action:hover { background: var(--bg-hover); }
+.sync-action[disabled] { opacity: .55; cursor: default; }
+.sync-action.is-primary {
+  color: var(--link-hover);
+  border-color: var(--answer);
+}
+.sync-action.is-quiet {
+  color: var(--muted);
+  background: none;
+}
+
+
+/* The dice-sound toggle, moved out of the footer into the tools row: an icon
+   alone, since the campaign control beside it carries the row's one label. */
+.sidebar-tools .sound-toggle {
+  flex: 0 0 auto;
+  margin-top: 0;
+  padding: .25rem .35rem;
+  line-height: 1;
+}
+.sidebar-tools .sound-toggle .sound-label {
+  /* Kept for screen readers — the glyph alone says nothing to one. */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- HP trackers ----------
+   One row of boxes, used by the adventure-site sheets (whose own layout around
+   them is in sites/site.css), by every monster stat block, and under a
+   playbook's second row of inputs. Click a box to set HP to that number, the
+   box you are on to take a point off, the readout to go back to full. */
+.hp-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  max-width: 22rem;
+}
+.hp-box {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 0.85rem;
+  height: 0.85rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.hp-box:hover {
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.15);
+}
+.hp-box.is-filled {
+  background: var(--accent);
+  border-color: var(--accent-deep);
+}
+.hp-box.is-empty {
+  background: rgba(0, 0, 0, 0.25);
+}
+/* A button on the book pages, a span on the sheets — the resets suit both. */
+.hp-readout {
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--head);
+  min-width: 2.6rem;
+  text-align: right;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.hp-readout.is-down { color: var(--danger); }
+.hp-readout.is-full { color: var(--head); }
+
+/* The wrapper the book pages mount: above a stat block's stat line, and under
+   the playbook track grid. Breaking it across columns would split a single
+   creature's health in two. */
+.hp-track {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.3rem 0 0.35rem;
+  break-inside: avoid;
+}
+.hp-track .hp-readout { min-width: 3.2rem; text-align: left; }
+.pb-track-grid + .hp-track {
+  margin: 0.5rem 0 0.2rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+/* Two actions on one line — export and import, which are a pair. */
+.sync-row {
+  display: flex;
+  gap: .35rem;
+}
+.sync-row .sync-action {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* ---------- Tags ----------
+   The small capsule an adventure-site sheet labels a room or a creature with,
+   and the same capsule the Sites hub uses to flag a sheet nobody has run at a
+   table yet. Defined here rather than in sites/site.css because the hub is an
+   ordinary wiki page and never loads that stylesheet. */
+.tag {
+  display: inline-block;
+  background: var(--accent-soft);
+  color: var(--head);
+  border: 1px solid var(--rule);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.08rem 0.35rem;
+  border-radius: 3px;
+  margin-right: 0.2rem;
+  vertical-align: middle;
+}
+.tag.danger { color: var(--danger); border-color: #5a3028; }
+
+/* ---- Language switcher (sidebar footer) ------------------------------
+   Real links, always in the DOM: a crawler arrives with Accept-Language: en
+   from a US address, so the site never picks a language for the reader —
+   they pick, and the switcher is what they pick from. Collapsed by default
+   because twenty-one endonyms would otherwise own the footer. */
+.lang-switch {
+  margin-bottom: 0.55rem;
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+.lang-switch > summary {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  cursor: pointer;
+  color: var(--muted);
+  list-style: none;
+  padding: 0.15rem 0;
+}
+.lang-switch > summary::-webkit-details-marker { display: none; }
+.lang-switch > summary:hover { color: var(--head); }
+.lang-globe { font-size: 0.85em; }
+.lang-switch .lang-now {
+  color: var(--head);
+  margin-left: auto;
+}
+.lang-switch[open] > summary .lang-now { opacity: 0.6; }
+.lang-list {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0.35rem 0 0 1.15rem;
+  border-top: 1px solid var(--rule);
+  max-height: 15rem;
+  overflow-y: auto;
+  columns: 2;
+  column-gap: 0.75rem;
+}
+.lang-list li {
+  margin: 0 0 0.22rem;
+  break-inside: avoid;
+}
+.lang-list a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.lang-list a:hover { color: var(--link-hover); }
+.lang-current {
+  color: var(--head);
+  font-weight: 600;
+}
+
+/* In the tools row (where wiki.js moves it) it is an icon, not a field: globe
+   plus the current language's code, with the list dropping over the topic nav
+   rather than pushing it down. The label stays in the DOM as the control's
+   accessible name — the glyph alone says nothing to a screen reader. */
+.sidebar-tools .lang-switch {
+  flex: 0 0 auto;
+  position: relative;
+  margin-bottom: 0;
+}
+.sidebar-tools .lang-switch > summary {
+  gap: .25rem;
+  padding: .25rem .4rem;
+  line-height: 1;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+}
+.sidebar-tools .lang-switch > summary:hover,
+.sidebar-tools .lang-switch[open] > summary {
+  color: var(--head);
+  border-color: var(--rule);
+}
+.sidebar-tools .lang-switch .lang-code {
+  font-size: .68rem;
+  letter-spacing: .04em;
+}
+.sidebar-tools .lang-switch .lang-label,
+.sidebar-tools .lang-switch .lang-now {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+/* Lifted onto the body by wiki.js and fixed to the viewport: the sidebar
+   scrolls, so a list positioned inside it is clipped at the sidebar's edge.
+   left/top are set there, measured off the summary and clamped on screen. */
+.lang-list.lang-list-float {
+  position: fixed;
+  z-index: 60;
+  left: 1rem;
+  top: 4rem;
+  width: min(19rem, calc(100vw - 2rem));
+  max-height: min(22rem, calc(100vh - 6rem));
+  margin: 0;
+  padding: .6rem .7rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+  background: var(--panel);
+  background-image: var(--card-wash);
+  box-shadow: var(--shadow-panel);
+  font-family: var(--font-sans);
+  font-size: .74rem;
+}
+.lang-list.lang-list-float[hidden] { display: none; }
+
+/* A sidebar entry whose page has no translation in this language yet: the
+   reader follows it up to the English page, and the type says so before
+   they click rather than after. */
+.nav-en { opacity: 0.72; }
+.nav-en::after {
+  content: "EN";
+  font-size: 0.62em;
+  letter-spacing: 0.06em;
+  margin-left: 0.35em;
+  vertical-align: 0.15em;
+  color: var(--muted);
+}
+
+
+/* ---- Feedback (page foot) -----------------------------------------------
+   A link under every article, built by wiki.js, and the small form it opens:
+   what to change, an optional reply address, and — unseen — which page. */
+.page-feedback {
+  margin-top: 2rem;
+  padding-top: .6rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-sans);
+  font-size: .78rem;
+  color: var(--muted);
+  break-inside: avoid;
+}
+.page-feedback-link {
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--rule);
+}
+.page-feedback-link:hover {
+  color: var(--head);
+  border-bottom-color: var(--answer);
+}
+
+.feedback-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, .55);
+}
+.feedback-overlay[hidden] { display: none; }
+
+.feedback-panel {
+  position: relative;
+  width: min(26rem, 100%);
+  margin: 0;
+  padding: 1rem 1.05rem 1.05rem;
+  font-family: var(--font-sans);
+  font-size: .78rem;
+  line-height: 1.45;
+  color: var(--muted);
+  background: var(--panel);
+  background-image: var(--card-wash);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+}
+.feedback-close {
+  position: absolute;
+  top: .4rem;
+  right: .5rem;
+  padding: .1rem .4rem;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.feedback-close:hover { color: var(--head); }
+.feedback-page {
+  margin: -.3rem 0 .7rem;
+  font-size: .72rem;
+}
+.feedback-page-title {
+  font-style: italic;
+  color: var(--head);
+}
+.feedback-panel .sync-field textarea {
+  width: 100%;
+  padding: .4rem .45rem;
+  font-family: inherit;
+  font-size: .8rem;
+  line-height: 1.4;
+  color: var(--link-hover);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  resize: vertical;
+}
+.feedback-panel .sync-field textarea:focus {
+  outline: none;
+  border-color: var(--answer);
+}
+.feedback-honey {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.feedback-actions {
+  display: flex;
+  gap: .5rem;
+  margin-top: .3rem;
+}
+.feedback-actions .sync-action { width: auto; flex: 1 1 auto; margin-top: 0; }
+.feedback-status { min-height: 1em; margin-bottom: 0; }
+
+/* ----- follower sheets (the Followers, Crew and Animal Companion inserts;
+   hand-authored in pages/, see the generator's page_override) ----- */
+.follower-sheet {
+  margin: .6rem 0 .9rem;
+  padding: .55rem .65rem .6rem;
+  background: var(--panel);
+  background-image: var(--card-wash);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  /* may span columns: a tall block that refuses to break leaves the column before it empty */
+  break-inside: auto;
+}
+.follower-sheet > h2 { margin-top: 0; }
+.follower-sheet > h3 { margin-top: .7rem; }
+.fs-field { display: flex; align-items: baseline; gap: .45rem; margin: .3rem 0; }
+.fs-field .wiki-field { flex: 1; min-width: 3rem; }
+.fs-label { flex: none; font-weight: 700; color: var(--head); font-size: .92em; }
+.fs-gloss, .fs-muted { color: var(--muted); font-size: .92em; margin: .2rem 0; }
+.fs-row { display: flex; align-items: baseline; gap: .8rem; flex-wrap: wrap; }
+.fs-row > .fs-field, .fs-row > p { flex: 1; margin: .2rem 0; }
+.fs-row > .arcana-track { flex: none; margin: 0; }
+.fs-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: .3rem; margin: .4rem 0 .2rem; }
+.fs-hp-mount:empty { display: none; }
+ul.check-list.fs-picks { display: flex; flex-wrap: wrap; gap: .05rem .9rem; }
+ul.check-list.fs-picks li.check-item { margin: .1rem 0; }
+ul.check-list.fs-lines li.check-item,
+ul.check-list.fs-picks li.check-item { display: flex; align-items: center; gap: .4rem; }
+.fs-lines .wiki-field, .fs-picks .wiki-field { flex: 1; min-width: 6rem; }
+.fs-moves ol, .fs-gear ul, ul.fs-inventory { list-style: none; margin: .15rem 0 .4rem; padding: 0; }
+.fs-moves, .fs-gear { flex-direction: column; align-items: stretch; gap: 0; }
+.fs-moves li, .fs-gear li { display: flex; align-items: center; gap: .4rem; margin: .15rem 0; }
+.fs-moves li::before { content: "▸"; color: var(--accent); flex: none; }
+.fs-gear li::before { content: "◇"; color: var(--muted); flex: none; }
+.fs-gear ul { display: block; }
+ul.fs-inventory li { margin: .12rem 0; }
+.fs-uses { display: flex; flex-wrap: wrap; gap: .2rem .6rem; margin: .2rem 0 .4rem; }
+.fs-uses .arcana-track { margin: 0; }
+.fs-notes { flex-direction: column; align-items: stretch; }
+textarea.wiki-field { width: 100%; min-height: 4.5rem; resize: none; display: block; line-height: 1.35; overflow-y: hidden; box-sizing: border-box; }
+.fs-people { display: grid; grid-template-columns: 1fr; gap: .4rem; margin: .3rem 0 .5rem; }
+.fs-person {
+  padding: .3rem .45rem;
+  border: 1px solid rgba(var(--head-rgb), .28);
+  border-radius: var(--radius-panel);
+  background: var(--panel);
+}
+.fs-person .fs-field { margin: .12rem 0; }
+.fs-type {
+  margin: .45rem 0;
+  padding: .4rem .5rem;
+  border: 1px solid rgba(var(--head-rgb), .28);
+  border-radius: var(--radius-panel);
+  break-inside: avoid;
+}
+.fs-type-head { display: flex; align-items: baseline; gap: .35rem; flex-wrap: wrap; }
+.fs-type-head label { display: inline-flex; align-items: center; gap: .35rem; cursor: pointer; }
+.fs-type-head .wiki-field { width: 5.5rem; }
+.fs-type .stat-line { margin: .15rem 0 .1rem; }
+/* steading sheet */
+.fs-stats-6 { grid-template-columns: repeat(5, 1fr); }
+.fs-stats .fs-muted { font-size: .72em; margin: 0; }
+ul.fs-items { list-style: none; margin: .15rem 0 .4rem; padding: 0; }
+ul.fs-items li { display: flex; align-items: center; gap: .4rem; margin: .12rem 0; }
+ul.fs-items li::before { content: "❦"; color: var(--accent); flex: none; font-size: .8em; }
+ul.fs-items .wiki-field { flex: 1; }
+ul.fs-places { list-style: none; margin: .15rem 0 .4rem; padding: 0; display: grid; grid-template-columns: 1fr; gap: .15rem .8rem; }
+ul.fs-places li { display: flex; align-items: center; gap: .45rem; }
+ul.fs-places .wiki-field { flex: 1; }
+.fs-badge {
+  flex: none; width: 1.35rem; height: 1.35rem; border-radius: 50%;
+  background: var(--head); color: var(--bg); font-weight: 700; font-size: .78em;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+@media (max-width: 640px) { .fs-stats-6 { grid-template-columns: repeat(3, 1fr); } }
+/* Not a scroll container: Chrome treats one as a single unbreakable box, which
+   shoved the 30-row Residents table into a fresh column and left the one before
+   it empty. The inputs shrink to fit the measure instead. */
+.fs-table-wrap { overflow: visible; margin: .3rem 0 .6rem; break-inside: auto; }
+table.fs-table { table-layout: fixed; break-inside: auto; }
+table.fs-table { width: 100%; border-collapse: collapse; font-size: .92em; }
+table.fs-table th { text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant: small-caps; letter-spacing: .04em; color: var(--head); font-weight: 600; padding: .1rem .3rem .2rem; border-bottom: 1px solid rgba(var(--head-rgb), .35); }
+table.fs-table td { padding: .12rem .2rem; border-bottom: 1px solid rgba(var(--head-rgb), .12); }
+table.fs-table td .wiki-field { width: 100%; box-sizing: border-box; }
+/* Column widths: with table-layout fixed they come off the header row, so
+   they are set on the <th>s. Traits gets the most room; Home and Occupation
+   the least. */
+table.fs-table th:first-child { width: 26%; }
+table.fs-table th:last-child { width: 44%; }
+table.fs-table th:nth-child(2):not(:last-child) { width: 15%; }
+.fs-improvement { margin: .4rem 0; }
+
+/* Tall blocks flow across columns; what must stay whole is a row, a list item, a small card. */
+.content table tr, .fs-table tr { break-inside: avoid; }
+.content table thead { display: table-header-group; }
+.fs-improvement, .fs-person, .fs-stats, .fs-type, .pb-track { break-inside: avoid; }
+.follower-sheet > h2, .follower-sheet > h3 { break-after: avoid; }
+
+/* Names, stats and spinboxes are set in the display face; every other box
+   (tags, traits, gear, notes, the tables) is ordinary type. */
+.pb-write-box,
+.pb-stat-box,
+.pb-track-box,
+.pb-spin .wiki-field,
+.wiki-field[data-field-key$=":name"],
+.wiki-field[data-field-key$="-name"] {
+  font-family: var(--font-serif);
+}
+
+/* Where an arcanum is (under its card) and what a playbook holds. */
+.arcana-location { margin: .5rem auto 0; max-width: 32rem; break-inside: avoid; }
+.arcana-location .fs-field { margin: 0; flex-wrap: wrap; }
+.arcana-location .wiki-field { flex: 1; min-width: 9rem; }
+.arcana-location select.wiki-field,
+.arcana-location select.wiki-field option,
+.arcana-location input.wiki-field,
+.pb-arcana a { font-family: var(--font-serif); }
+.arcana-location select.wiki-field {
+  cursor: pointer;
+  /* The popup is painted by the browser off color-scheme, not off our
+     tokens: inherit the page's, and give the options the panel colors. */
+  color-scheme: inherit;
+  background-color: var(--panel);
+  color: var(--answer);
+}
+.arcana-location select.wiki-field option {
+  background: var(--panel);
+  color: var(--ink);
+}
+.pb-arcana { margin: .4rem 0 .8rem; break-inside: avoid; }
+.pb-arcana > h2 { margin-top: 0; }
+ul.pb-arcana-list { list-style: disc outside; margin: .2rem 0 .3rem; padding-left: 1.2rem; }
+ul.pb-arcana-list li::marker { color: var(--head); }
+ul.pb-arcana-list li { margin: .12rem 0; }
+.pb-arcana-empty { margin: .2rem 0; }
+/* Inventory sheet: a checkbox per ◇ slot ahead of the item. */
+li.inv-item { display: flex; align-items: baseline; gap: .45rem; margin: .15rem 0; }
+li.inv-item .inv-slots { display: inline-flex; gap: .2rem; flex: none; }
+li.inv-item .inv-slots input.wiki-check { width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; margin: 0; }
+li.inv-item label { cursor: pointer; }
+li.inv-item .wiki-field { flex: 1; }
