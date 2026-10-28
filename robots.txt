@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://stonetop.cc/sitemap.xml
